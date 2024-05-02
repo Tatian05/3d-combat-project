@@ -5,11 +5,9 @@ using UnityEngine.InputSystem;
 public class PlayerController
 {
     PlayerInputs _playerInput;
-    InputAction _movementAction, _runAction;
+    InputAction _movementAction, _runStartAction, _runEndAction;
     Vector2 _movement;
-    Action<float, float> _move;
-    Action<float, float> _walk;
-    Action<float, float> _run;
+    Action<bool> _setSpeed;
 
     #region Constructor
 
@@ -17,24 +15,22 @@ public class PlayerController
     PlayerView _playerView;
 
     #endregion
-    public PlayerController(PlayerModel playerModel, PlayerView playerView)
+    public PlayerController(PlayerView playerView, PlayerModel playerModel)
     {
-        _playerInput = new PlayerInputs();
-        _movementAction = _playerInput.Player.Movement;
-        _runAction = _playerInput.Player.Run;
-        _runAction.started += SetRun;
-        _runAction.canceled += SetWalk;
-
         _playerModel = playerModel;
         _playerView = playerView;
 
-        _walk += _playerModel.Walk;
-        _walk += _playerView.MovementAnimation;
+        _playerInput = new PlayerInputs();
+        _movementAction = _playerInput.Player.Movement;
+        _runStartAction = _playerInput.Player.RunStart;
+        _runEndAction = _playerInput.Player.RunEnd;
+        _runStartAction.performed += RunStart;
+        _runEndAction.performed += RunEnd;
 
-        _run += _playerModel.Run;
-        _run += _playerView.MovementAnimation;
+        _setSpeed += _playerView.SetSpeed;
+        _setSpeed += _playerModel.SetCurrentSpeed;
 
-        _move = _walk;
+        _setSpeed(false);
     }
 
     public void OnEnable()
@@ -44,32 +40,31 @@ public class PlayerController
 
     public void OnDisable()
     {
-        _runAction.performed -= SetRun;
-        _runAction.canceled -= SetWalk;
+        _runStartAction.performed -= RunStart;
+        _runEndAction.canceled -= RunEnd;
         _playerInput.Disable();
     }
 
     public void OnUpdate()
     {
         _movement = _movementAction.ReadValue<Vector2>();
+
+        _playerModel.OnUpdate(_movement.x, _movement.y);
+        _playerView.OnUpdate(_movement.x, _movement.y);
     }
 
     public void OnFixedUpdate()
     {
-        _move(_movement.x, _movement.y);
+        _playerModel.OnFixedUpdate();
     }
 
-    void SetRun(InputAction.CallbackContext callbackContext)
+    void RunStart(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Run");
-        _playerView.SetSpeed(_playerModel.CurrentSpeed);
-        _move = _run;
+        _setSpeed(true);
     }
 
-    void SetWalk(InputAction.CallbackContext callbackContext)
+    void RunEnd(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Walk");
-        _playerView.SetSpeed(_playerModel.CurrentSpeed);
-        _move = _walk;
+        _setSpeed(false);
     }
 }

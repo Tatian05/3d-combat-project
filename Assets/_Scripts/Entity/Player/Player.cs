@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class Player : MonoBehaviour
 {
@@ -6,7 +7,9 @@ public class Player : MonoBehaviour
     PlayerController _controller;
     void Start()
     {
-        _controller = new PlayerController(new PlayerModel(GetComponent<Rigidbody>(), _walkSpeed, _runSpeed), new PlayerView(GetComponent<Animator>()));
+        PlayerView playerView = new PlayerView(GetComponent<Animator>(), _walkSpeed, _runSpeed);
+        PlayerModel playerModel = new PlayerModel(GetComponent<Rigidbody>(), _walkSpeed, _runSpeed);
+        _controller = new PlayerController(playerView, playerModel);
         _controller.OnEnable();
     }
     private void OnDisable()

@@ -8,25 +8,36 @@ public class PlayerModel
 
     #endregion
 
-    public int CurrentSpeed { get; private set; }
-
+    Vector3 _movementDirection;
+    Camera _camera;
+    float _movementSpeed, _currentSpeed;
     public PlayerModel(Rigidbody rb, int walkSpeed, int runSpeed)
     {
         _rb = rb;
         _walkSpeed = walkSpeed;
         _runSpeed = runSpeed;
-    }
-    public void Walk(float x, float z)
-    {
-        CurrentSpeed = _walkSpeed;
-        float speed = z < 0 ? _walkSpeed * .5f : _walkSpeed;
-        _rb.velocity = new Vector3(x,0, z) * speed;
+
+        _camera = Helpers.MainCamera;
+        _currentSpeed = _walkSpeed;
     }
 
-    public void Run(float x, float z)
+    public void OnUpdate(float x, float z)
     {
-        CurrentSpeed = _runSpeed;
-        float speed = z < 0 ? _runSpeed * .5f : _runSpeed;
-        _rb.velocity = new Vector3(x, 0, z) * speed;
+        _movementDirection = Quaternion.AngleAxis(_camera.transform.rotation.eulerAngles.y, Vector3.up) * new Vector3(x, 0, z);
+        _movementSpeed = z < 0 ? _currentSpeed * .5f : _currentSpeed;
+    }
+
+    public void OnFixedUpdate()
+    {
+        Movement();
+    }
+
+    void Movement()
+    {
+        _rb.velocity = _movementDirection * _movementSpeed;
+    }
+    public void SetCurrentSpeed(bool isRunning)
+    {
+        _currentSpeed = isRunning ? _runSpeed : _walkSpeed;
     }
 }
