@@ -7,8 +7,8 @@ public class Player : MonoBehaviour
     PlayerController _controller;
     void Start()
     {
-        PlayerView playerView = new PlayerView(GetComponent<Animator>(), _walkSpeed, _runSpeed);
-        PlayerModel playerModel = new PlayerModel(GetComponent<Rigidbody>(), _walkSpeed, _runSpeed);
+        PlayerView playerView = new (GetComponent<Animator>(), _walkSpeed, _runSpeed);
+        PlayerModel playerModel = new (transform, GetComponent<Rigidbody>(), _walkSpeed, _runSpeed);
         _controller = new PlayerController(playerView, playerModel);
         _controller.OnEnable();
     }
