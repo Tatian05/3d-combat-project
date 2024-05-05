@@ -1,36 +1,35 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController
 {
     PlayerInputs _playerInput;
-    InputAction _movementAction, _runStartAction, _runEndAction;
+    readonly InputAction _movementAction, _runStart, _runEnd, _blockStart, _blockEnd;
     Vector2 _movement;
-    Action<bool> _setSpeed;
 
     #region Constructor
 
-    PlayerModel _playerModel;
-    PlayerView _playerView;
+    Player _player;
 
     #endregion
-    public PlayerController(PlayerView playerView, PlayerModel playerModel)
+    public PlayerController(Player player)
     {
-        _playerModel = playerModel;
-        _playerView = playerView;
+        _player = player;
 
         _playerInput = new PlayerInputs();
         _movementAction = _playerInput.Player.Movement;
-        _runStartAction = _playerInput.Player.RunStart;
-        _runEndAction = _playerInput.Player.RunEnd;
-        _runStartAction.performed += RunStart;
-        _runEndAction.performed += RunEnd;
+        _runStart = _playerInput.Player.RunStart;
+        _runEnd = _playerInput.Player.RunEnd;
+        _blockStart = _playerInput.Player.BlockStart;
+        _blockEnd = _playerInput.Player.BlockEnd;
 
-        _setSpeed += _playerView.SetSpeed;
-        _setSpeed += _playerModel.SetCurrentSpeed;
+        _runStart.performed += x => RunAction(true);
+        _runEnd.performed += x => RunAction(false);
 
-        _setSpeed(false);
+        _blockStart.performed += x => BlockAction(true);
+        _blockEnd.performed += x => BlockAction(false);
+
+        _player.setSpeed(false);
     }
 
     public void OnEnable()
@@ -40,8 +39,12 @@ public class PlayerController
 
     public void OnDisable()
     {
-        _runStartAction.performed -= RunStart;
-        _runEndAction.canceled -= RunEnd;
+        _runStart.performed -= x => RunAction(true);
+        _runEnd.canceled -= x => RunAction(false);
+
+        _blockStart.performed -= x => BlockAction(true);
+        _blockEnd.performed -= x => BlockAction(false);
+
         _playerInput.Disable();
     }
 
@@ -49,22 +52,22 @@ public class PlayerController
     {
         _movement = _movementAction.ReadValue<Vector2>();
 
-        _playerModel.OnUpdate(_movement.x, _movement.y);
-        _playerView.OnUpdate(_movement.x, _movement.y);
+        _player.OnUpdate(_movement.x, _movement.y);
     }
 
     public void OnFixedUpdate()
     {
-        _playerModel.OnFixedUpdate();
+        _player.OnFixedUpdate();
     }
 
-    void RunStart(InputAction.CallbackContext callbackContext)
+    void BlockAction(bool isBlocking)
     {
-        _setSpeed(true);
+        Debug.Log(isBlocking);
+        _player.blocking(isBlocking);
     }
 
-    void RunEnd(InputAction.CallbackContext callbackContext)
+    void RunAction(bool isRunning)
     {
-        _setSpeed(false);
+        _player.setSpeed(isRunning);
     }
 }

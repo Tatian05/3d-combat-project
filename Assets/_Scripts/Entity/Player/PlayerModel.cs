@@ -12,6 +12,7 @@ public class PlayerModel
     Vector3 _movementDirection;
     Camera _camera;
     float _movementSpeed, _currentSpeed;
+    bool _isBlocking;
     public PlayerModel(Transform transform, Rigidbody rb, int walkSpeed, int runSpeed)
     {
         _transform = transform;
@@ -27,7 +28,8 @@ public class PlayerModel
     {
         _movementDirection = Quaternion.AngleAxis(_camera.transform.rotation.eulerAngles.y, Vector3.up) * new Vector3(x, 0, z);
         _movementSpeed = z < 0 ? _currentSpeed * .5f : _currentSpeed;
-        if (_movementDirection != Vector3.zero) _transform.forward = _movementDirection * Mathf.Sign(z);
+        if (_movementDirection != Vector3.zero) 
+            _transform.forward = _isBlocking ? new Vector3(_camera.transform.forward.x, 0, _camera.transform.forward.z) : _movementDirection * Mathf.Sign(z);
     }
 
     public void OnFixedUpdate()
@@ -38,6 +40,12 @@ public class PlayerModel
     void Movement()
     {
         _rb.velocity = _movementDirection * _movementSpeed;
+    }
+
+    public void Block(bool isBlocking)
+    {
+        _isBlocking = isBlocking;
+        SetCurrentSpeed(isBlocking);
     }
     public void SetCurrentSpeed(bool isRunning)
     {

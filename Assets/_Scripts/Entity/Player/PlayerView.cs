@@ -20,4 +20,9 @@ public class PlayerView
     {
         _animator.SetInteger("speed", isRunning ? _runSpeed : _walkSpeed);
     }
+
+    public void Block(bool isBlocking)
+    {
+        _animator.SetBool("defense", isBlocking);
+    }
 }

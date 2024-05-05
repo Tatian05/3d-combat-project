@@ -53,6 +53,24 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BlockStart"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7a93481-0fb0-4875-b97d-878e176706ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BlockEnd"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc173c8d-787d-425e-b2ba-0e29b31e7ea8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""RunEnd"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7dfe9657-98c3-4c84-a490-1758e23d4891"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""BlockStart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""619aa977-45f7-4669-8f7a-ece0752977cd"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""BlockEnd"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -145,6 +185,11 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""devicePath"": ""<Keyboard>"",
                     ""isOptional"": false,
                     ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<VirtualMouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
                 }
             ]
         }
@@ -155,6 +200,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_RunStart = m_Player.FindAction("RunStart", throwIfNotFound: true);
         m_Player_RunEnd = m_Player.FindAction("RunEnd", throwIfNotFound: true);
+        m_Player_BlockStart = m_Player.FindAction("BlockStart", throwIfNotFound: true);
+        m_Player_BlockEnd = m_Player.FindAction("BlockEnd", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -219,6 +266,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_RunStart;
     private readonly InputAction m_Player_RunEnd;
+    private readonly InputAction m_Player_BlockStart;
+    private readonly InputAction m_Player_BlockEnd;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -226,6 +275,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @RunStart => m_Wrapper.m_Player_RunStart;
         public InputAction @RunEnd => m_Wrapper.m_Player_RunEnd;
+        public InputAction @BlockStart => m_Wrapper.m_Player_BlockStart;
+        public InputAction @BlockEnd => m_Wrapper.m_Player_BlockEnd;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -244,6 +295,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @RunEnd.started += instance.OnRunEnd;
             @RunEnd.performed += instance.OnRunEnd;
             @RunEnd.canceled += instance.OnRunEnd;
+            @BlockStart.started += instance.OnBlockStart;
+            @BlockStart.performed += instance.OnBlockStart;
+            @BlockStart.canceled += instance.OnBlockStart;
+            @BlockEnd.started += instance.OnBlockEnd;
+            @BlockEnd.performed += instance.OnBlockEnd;
+            @BlockEnd.canceled += instance.OnBlockEnd;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -257,6 +314,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @RunEnd.started -= instance.OnRunEnd;
             @RunEnd.performed -= instance.OnRunEnd;
             @RunEnd.canceled -= instance.OnRunEnd;
+            @BlockStart.started -= instance.OnBlockStart;
+            @BlockStart.performed -= instance.OnBlockStart;
+            @BlockStart.canceled -= instance.OnBlockStart;
+            @BlockEnd.started -= instance.OnBlockEnd;
+            @BlockEnd.performed -= instance.OnBlockEnd;
+            @BlockEnd.canceled -= instance.OnBlockEnd;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -288,5 +351,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnRunStart(InputAction.CallbackContext context);
         void OnRunEnd(InputAction.CallbackContext context);
+        void OnBlockStart(InputAction.CallbackContext context);
+        void OnBlockEnd(InputAction.CallbackContext context);
     }
 }
