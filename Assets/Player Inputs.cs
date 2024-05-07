@@ -71,6 +71,24 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwordStart"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7df217a-7436-4453-8e25-b34e178a14d4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwordEnd"",
+                    ""type"": ""Button"",
+                    ""id"": ""ee4dae6b-fb0d-41e3-81a7-e13cbf0b9257"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +190,28 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""action"": ""BlockEnd"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97030cc5-3ac5-43cb-91b3-b7edd04a8cc6"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""SwordStart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4a5607a1-d794-47b5-bc36-7d88aff39ff0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""SwordEnd"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -202,6 +242,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Player_RunEnd = m_Player.FindAction("RunEnd", throwIfNotFound: true);
         m_Player_BlockStart = m_Player.FindAction("BlockStart", throwIfNotFound: true);
         m_Player_BlockEnd = m_Player.FindAction("BlockEnd", throwIfNotFound: true);
+        m_Player_SwordStart = m_Player.FindAction("SwordStart", throwIfNotFound: true);
+        m_Player_SwordEnd = m_Player.FindAction("SwordEnd", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -268,6 +310,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RunEnd;
     private readonly InputAction m_Player_BlockStart;
     private readonly InputAction m_Player_BlockEnd;
+    private readonly InputAction m_Player_SwordStart;
+    private readonly InputAction m_Player_SwordEnd;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -277,6 +321,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         public InputAction @RunEnd => m_Wrapper.m_Player_RunEnd;
         public InputAction @BlockStart => m_Wrapper.m_Player_BlockStart;
         public InputAction @BlockEnd => m_Wrapper.m_Player_BlockEnd;
+        public InputAction @SwordStart => m_Wrapper.m_Player_SwordStart;
+        public InputAction @SwordEnd => m_Wrapper.m_Player_SwordEnd;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -301,6 +347,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @BlockEnd.started += instance.OnBlockEnd;
             @BlockEnd.performed += instance.OnBlockEnd;
             @BlockEnd.canceled += instance.OnBlockEnd;
+            @SwordStart.started += instance.OnSwordStart;
+            @SwordStart.performed += instance.OnSwordStart;
+            @SwordStart.canceled += instance.OnSwordStart;
+            @SwordEnd.started += instance.OnSwordEnd;
+            @SwordEnd.performed += instance.OnSwordEnd;
+            @SwordEnd.canceled += instance.OnSwordEnd;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -320,6 +372,12 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             @BlockEnd.started -= instance.OnBlockEnd;
             @BlockEnd.performed -= instance.OnBlockEnd;
             @BlockEnd.canceled -= instance.OnBlockEnd;
+            @SwordStart.started -= instance.OnSwordStart;
+            @SwordStart.performed -= instance.OnSwordStart;
+            @SwordStart.canceled -= instance.OnSwordStart;
+            @SwordEnd.started -= instance.OnSwordEnd;
+            @SwordEnd.performed -= instance.OnSwordEnd;
+            @SwordEnd.canceled -= instance.OnSwordEnd;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -353,5 +411,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         void OnRunEnd(InputAction.CallbackContext context);
         void OnBlockStart(InputAction.CallbackContext context);
         void OnBlockEnd(InputAction.CallbackContext context);
+        void OnSwordStart(InputAction.CallbackContext context);
+        void OnSwordEnd(InputAction.CallbackContext context);
     }
 }

@@ -2,12 +2,9 @@ using UnityEngine;
 public class PlayerView
 {
     Animator _animator;
-    int _walkSpeed, _runSpeed;
-    public PlayerView(Animator animator, int walkSpeed, int runSpeed)
+    public PlayerView(Animator animator)
     {
         _animator = animator;
-        _walkSpeed = walkSpeed;
-        _runSpeed = runSpeed;
     }
 
     public void OnUpdate(float x, float z)
@@ -16,13 +13,18 @@ public class PlayerView
         _animator.SetFloat("z", z, .1f, Time.deltaTime);
     }
 
-    public void SetSpeed(bool isRunning)
+    public void SetSpeed(int speed)
     {
-        _animator.SetInteger("speed", isRunning ? _runSpeed : _walkSpeed);
+        _animator.SetInteger("speed", speed);
     }
 
-    public void Block(bool isBlocking)
+    public void Blocking(bool isBlocking)
     {
         _animator.SetBool("defense", isBlocking);
+    }
+
+    public void Sword()
+    {
+        _animator.SetTrigger("Sword");
     }
 }

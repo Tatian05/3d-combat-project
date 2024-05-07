@@ -49,6 +49,24 @@
                     "processors": "",
                     "interactions": "Press(behavior=1)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwordStart",
+                    "type": "Button",
+                    "id": "b7df217a-7436-4453-8e25-b34e178a14d4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwordEnd",
+                    "type": "Button",
+                    "id": "ee4dae6b-fb0d-41e3-81a7-e13cbf0b9257",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -148,6 +166,28 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "BlockEnd",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97030cc5-3ac5-43cb-91b3-b7edd04a8cc6",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "SwordStart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4a5607a1-d794-47b5-bc36-7d88aff39ff0",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "SwordEnd",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
